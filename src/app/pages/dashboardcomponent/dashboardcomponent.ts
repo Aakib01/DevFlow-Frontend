@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,7 +13,7 @@ export class DashboardComponent implements OnInit {
 
   projects: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadProjects();
@@ -22,6 +23,12 @@ export class DashboardComponent implements OnInit {
     this.http.get<any[]>('http://localhost:5000/api/projects/project')
       .subscribe(res => {
         this.projects = res;
+        this.cd.detectChanges();
       });
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/']);  
   }
 }
