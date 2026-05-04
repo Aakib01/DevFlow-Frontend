@@ -13,6 +13,7 @@ export class TicketsComponent implements OnInit {
 
   tickets: any[] = [];
   projectId!: number;
+  transitionsMap: { [key: number]: any[] } = {};
 
   states = ['Backlog', 'Active','InProgress', 'Completed'];
 
@@ -28,6 +29,7 @@ export class TicketsComponent implements OnInit {
     this.http.get<any[]>(`http://localhost:5000/api/projects/ticket?projectId=${this.projectId}`)
       .subscribe(res => {
         this.tickets = res;
+        this.tickets.forEach(t => this.loadTransitions(t.id));
         this.cd.detectChanges();
       });
   }
@@ -40,15 +42,21 @@ export class TicketsComponent implements OnInit {
 
   let toStateId = 0;
 
-  if (currentState === 'Backlog') toStateId = 2;
-  else if (currentState === 'Active') toStateId = 4;
-  else if (currentState === 'InProgress') toStateId = 5;
+  toStateId = this.transitionsMap[ticketId][0].id; // default to first transition
 
   this.http.post(
     `http://localhost:5000/api/projects/ticket/${ticketId}/transition?toStateId=${toStateId}`,
     {}
-  ).subscribe(() => {
-    this.loadTickets(); // refresh
-  });
-}
+    ).subscribe(() => {
+     this.loadTickets(); // refresh
+    });
+  }
+
+  loadTransitions(ticketId: number) {
+  this.http.get<any[]>(`http://localhost:5000/api/projects/ticket/${ticketId}/transitions`)
+    .subscribe(res => {
+      this.transitionsMap[ticketId] = res;
+      this.cd.detectChanges();
+    });
+  }
 }

@@ -9,9 +9,13 @@
       
       <p>{{t.title}}</p>
 
-      <!-- Move buttons -->
-      <button (click)="move(t.id, state)">Move</button>
-
+    <!-- Dynamic transitions -->
+      <div *ngIf="transitionsMap[t.id]">
+        <button *ngFor="let tr of transitionsMap[t.id]"
+                (click)="move(t.id, tr.id)">
+          Move to {{tr.name}}
+        </button>
+      </div>
     </div>
 
   </div>
