@@ -1,0 +1,19 @@
+<div style="display: flex; gap: 20px;">
+
+  <div *ngFor="let state of states" style="width: 30%; border: 1px solid #ccc; padding: 10px;">
+    
+    <h3>{{state}}</h3>
+
+    <div *ngFor="let t of getTicketsByState(state)" 
+         style="border: 1px solid black; margin: 5px; padding: 5px;">
+      
+      <p>{{t.title}}</p>
+
+      <!-- Move buttons -->
+      <button (click)="move(t.id, state)">Move</button>
+
+    </div>
+
+  </div>
+
+</div>

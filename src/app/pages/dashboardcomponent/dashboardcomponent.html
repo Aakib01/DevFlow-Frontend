@@ -2,6 +2,7 @@
 
 <div *ngFor="let p of projects">
   {{p.name}}
+  <button [routerLink]="['/tickets', p.id]">Open</button>
 </div>
 
 <button (click)="logout()">Logout</button>
